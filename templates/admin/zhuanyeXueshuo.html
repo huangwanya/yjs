@@ -1,0 +1,202 @@
+{% extends 'admin.html' %}
+{% load static %}
+{% block nav %}
+    <a href="/admin/scrapy?name=major_academic" style="margin-top: 10px" class="layui-btn">数据更新</a>
+    <a style="margin-top: 10px" class="layui-btn" id="create">新增数据</a>
+
+{% endblock %}
+{% block body %}
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="test"></table>
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">修改</a>
+                <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+            </script>
+            <a href="/" class="layui-btn">返回</a>
+        </div>
+        <div id="speedChart" style="display: none;">
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div id="main" style="width: 600px; height: 400px;">
+                <form class="layui-form" action="/admin/create/" method="post">
+                    <div class="layui-form-item" style="display: none">
+                        <label class="layui-form-label">name</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" lay-verify="required" value="zhuanyeXueshuo"
+                                   placeholder="请输入name"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">专业</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="discipline" required lay-verify="required" placeholder="请输入专业"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="type" required lay-verify="required" placeholder="请输入类型"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">专业名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="zhuanye" required lay-verify="required"
+                                   placeholder="专业名称"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">专业代码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="code" required lay-verify="required"
+                                   placeholder="专业代码"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开设大学</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="school" required lay-verify="required"
+                                   placeholder="开设大学"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">详情</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" required lay-verify="required"
+                                   placeholder="详情"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">内容</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="text" required lay-verify="required"
+                                   placeholder="内容"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">官网</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="school_is" required lay-verify="required"
+                                   placeholder="官网"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script type="text/javascript">
+        layui.use('table', function () {
+            var table = layui.table;
+            var dropdown = layui.dropdown;
+
+            //第一个实例
+            table.render({
+                elem: '#demo'
+                , height: 600
+                , url: '/admin/zhuanyeXueshuo/' //数据接口
+                , method: 'POST'
+                , request: {
+                    pageName: 'page',   // 页码的参数名称，默认：page
+                    limitName: 'size'   // 每页数据量的参数名，默认：limit
+                }
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'id', title: 'ID', width: 100, sort: true, fixed: 'left'}
+                    , {field: 'discipline', title: '专业', width: 250}
+                    , {field: 'type', title: '类型', width: 300}
+                    , {field: 'name', title: '专业名称', width: 300}
+                    , {field: 'code', title: '专业代码', width: 200, edit: 'text'}
+                    , {field: 'school', title: '开设大学', width: 200, edit: 'text'}
+                    , {field: 'title', title: '详情', width: 200, edit: 'text'}
+                    , {field: 'text', title: '内容', width: 200, edit: 'text'}
+                    , {field: 'school_is', title: '官网', width: 200, edit: 'text'}
+                    , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
+                ]]
+            });
+            table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data //获得当前行数据
+                    , layEvent = obj.event; //获得 lay-event 对应的值
+                if (layEvent === 'detail') {
+                    layer.msg('修改操作');
+                    $.post(
+                        "/admin/update/", {
+                            name: "zhuanyeXueshuo"
+                            , id: obj.data.id
+                            , code: obj.data.code
+                            , school: obj.data.school
+                            , title: obj.data.title
+                            , text: obj.data.text
+                            , school_is: obj.data.school_is
+                        },
+
+                        function (data, status) {
+                            console.log(data)
+                        }
+                    )
+                    ;
+                } else if (layEvent === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构
+                        layer.close(index);
+                        $.post(
+                            "/admin/delete/", {
+                                name: "zhuanyeXueshuo",
+                                id: obj.data.id
+                            },
+                            function (data, status) {
+                                console.log(data)
+                            }
+                        );
+                    });
+                }
+            });
+            table.on('edit(test)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+                console.log(obj.value); //得到修改后的值
+                console.log(obj.field); //当前编辑的字段名
+                console.log(obj.data.id); //所在行的所有相关数据
+            });
+
+        });
+        layui.use(['element', 'layer', 'util'], function () {
+            var element = layui.element
+                , layer = layui.layer
+                , util = layui.util
+                , $ = layui.$;
+            $('#create').on('click', function () {
+                layer.open({
+                    title: '添加数据',
+                    type: 1,
+                    shade: false,
+                    area: ['620px', '460px'],
+                    shadeClose: false, //点击遮罩关闭
+                    content: $("#speedChart")
+                });
+            });
+        });
+
+    </script>
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

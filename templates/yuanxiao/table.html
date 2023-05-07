@@ -1,0 +1,39 @@
+{% extends 'yuanxiao/yuanxiao.html' %}
+{% load static %}
+{% block body %}
+    <div class="layui-card " style="background: #F6F6F6">
+        <div class="layui-card-header">院校库</div>
+        <div class="layui-row layui-col-space15">
+            {% for item in table %}
+                <div class="layui-col-md6">
+                    <div style="background: white" class="layui-card-body">
+                        <div class="info-box">
+                            <img src="/static/school/{{ item.img }}" style="width: 50px;height: 100%">
+                                {{ item.name }}
+                            <div class="sch-department">
+                                {{ item.region }}
+                                <span class="col-line"></span>
+                                {{ item.subordinate }}
+
+                                {% if item.graduate == '研究生院' %}
+                                    <span class="col-line"></span>
+                                    研究生院
+                                {% endif %}
+                                {% if item.zhx == '自划线' %}
+                                    <span class="col-line"></span>
+                                    自划线
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="/static/layui.js"></script>
+    <script>
+    </script>
+{% endblock body %}
+

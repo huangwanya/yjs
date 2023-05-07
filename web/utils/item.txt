@@ -1,0 +1,32 @@
+    year
+    title
+
+
+
+    region
+    regular_total
+    regular_central
+    degree
+    higher
+    adult_total
+    adult_central
+    government
+
+    region
+    graduates_total
+    graduates_female
+    graduates_doctor
+    graduates_master
+    degree_awarded
+    entrants_total
+    entrants_female
+    entrants_doctor
+    entrants_master
+    enrolment_total
+    enrolment_female
+    enrolment_doctor
+    enrolment_master
+    nextYear_total
+    nextYear_female
+    nextYear_doctor
+    nextYear_master

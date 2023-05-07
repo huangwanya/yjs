@@ -1,0 +1,47 @@
+{% extends 'zhuanye/zhuanyexueshuo.html' %}
+{% load static %}
+{% block body %}
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>专业</th>
+                    <th>专业类型</th>
+                    <th>专业名称</th>
+                    <th>专业代码</th>
+                    <th>开设大学</th>
+                    <th>专业详情</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in table %}
+                    <tr>
+                        <td>{{ item.discipline }}</td>
+                        <td>{{ item.type }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.code }}</td>
+                        <td>{{ item.school }}</td>
+                        <td>
+                            <a href="/zhuanyeAT/?discipline={{ item.discipline }}&type={{ item.type }}&name={{ item.name }}&school=
+                                    {{ item.school}}">{{ item.title }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

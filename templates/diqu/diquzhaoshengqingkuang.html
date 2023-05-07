@@ -1,0 +1,73 @@
+{% extends 'index.html' %}
+{% block nav %}
+
+    {% for item in  year %}
+        <li class="layui-nav-item layui-hide-xs"><a href="/zsqk?year={{ item }}">{{ item }}</a></li>
+    {% endfor %}
+
+{% endblock %}
+{% block body %}
+    <div id="main" style="width: 1300px;height:600px;"></div>
+    <script src="/static/echarts/echarts.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var region =
+        {{ region | safe }}
+        var regular_total =
+        {{regular_total | safe}}
+        var adult_total =
+        {{adult_total | safe}}
+        var government =
+        {{government | safe}}
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '高等院校数'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: region,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                axisLabel: {
+                    rotate: 40,
+                    interval: 0,
+                },
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: regular_total,
+                    type: 'bar',
+                    showBackground: true,
+                    backgroundStyle: {
+                        color: 'rgba(180, 180, 180, 0.2)'
+                    }
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+    </script>
+{% endblock body %}
+
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

@@ -1,0 +1,122 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block nav %}
+
+{% endblock %}
+{% block body %}
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>专业</th>
+                    <th>年份</th>
+                    <th>成绩</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in table %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.year }}</td>
+                        <td>{{ item.score }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <button data-method="offset" data-type="auto" class="layui-btn">生成图表</button>
+            <a href="/xuexiaoD/?school={{ school }}" class="layui-btn">返回</a>
+            <div id="speedChart" style="display: none;">
+                <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                <div id="main" style="width: 600px; height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/echarts/echarts.js"></script>
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script type="text/javascript">
+        var data = {{ table | safe}};
+        console.log(data)
+        let name = [];
+        let year = [];
+        let score = [];
+        for (const item of data) {
+            name.push(item['title'])
+            year.push(item['year'])
+            score.push(item['score'])
+        }
+
+        // 基于准备好的dom，初始化echarts实例
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['分数线']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: year
+            },
+            yAxis: {
+
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '分数线',
+                    type: 'line',
+                    data: score
+                }
+
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        layui.use(['element', 'layer', 'util'], function () {
+            var element = layui.element
+                , layer = layui.layer
+                , util = layui.util
+                , $ = layui.$;
+            $('.layui-btn').on('click', function () {
+                layer.open({
+                    title: '数据对比',
+                    type: 1,
+                    shade: false,
+                    area: ['620px', '460px'],
+                    shadeClose: false, //点击遮罩关闭
+                    content: $("#speedChart")
+                });
+            });
+        });
+
+
+    </script>
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

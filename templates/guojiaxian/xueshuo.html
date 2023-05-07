@@ -1,0 +1,28 @@
+{% extends 'index.html' %}
+{% block nav %}
+
+    {% for item in  year %}
+
+    {% endfor %}
+
+{% endblock %}
+{% block body %}
+    <div class="layui-container layui-bg-gray" style="margin-top: 50px">
+        <div class="layui-row layui-col-space10">
+            {% for item in values %}
+                <div class="layui-col-md3" >
+                    <div class="layui-panel" style="text-align: center; height: 80px">
+                        <a href="/xueshuoD?name={{ item.name }}" style="line-height: 40px;color: #5FB878" >{{ item.name }}</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

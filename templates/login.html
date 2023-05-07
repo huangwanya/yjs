@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    {% load static %}
+    <script src="/static/jquery.js"></script>
+    <link rel="stylesheet" href="/static/css/layui.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+<div class="wrap">
+    <img src="/static/image/back.jpg" class="imgStyle">
+
+    <div class="loginForm">
+        <form style="margin-top: 20px">
+            {% csrf_token %}
+            <div class="logoHead">
+                <h2 style="margin-top: 15px;font-size: 25px">考研信息分析推荐系统</h2>
+            </div>
+            <div class="usernameWrapDiv">
+                <div class="usernameLabel">
+                    <label>用户名:</label>
+                </div>
+                <div class="usernameDiv">
+                    <i class="layui-icon layui-icon-username adminIcon"></i>
+                    <input id="loginUsername" class="layui-input adminInput" type="text" name="username"
+                           placeholder="输入用户名">
+                </div>
+            </div>
+            <div class="usernameWrapDiv">
+                <div class="usernameLabel">
+                    <label>密码:</label>
+                </div>
+                <div class="passwordDiv">
+                    <input id="loginPassword" class="layui-input adminInput" type="password" name="password"
+                           placeholder="输入密码">
+                </div>
+            </div>
+            <div class="usernameWrapDiv">
+                <div class="submitDiv" style="margin-left: 150px">
+                    <input id="loginBtn" type="button" class="submit layui-btn layui-btn-primary" value="登录"></input>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="/static/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['layer'], function () {
+        var layer = layui.layer;
+    })
+    var show_num = [];
+    var csrftoken = $.cookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    })
+
+    $(function () {
+        // 登陆事件
+        $('#loginBtn').click(function () {
+            login();
+        });
+        // 注册事件
+        $('#loginRegister').click(function () {
+            register();
+        });
+    });
+
+
+    // 校验验证码、用户名、密码
+    function validateCode(inputID, codeID) {
+        var inputCode = show_num.join("")
+        var cardCode = $(codeID).val();
+        console.log(cardCode)
+        console.log(inputCode)
+        var loginUsername = $('#loginUsername').val();
+        var loginPassword = $('#loginPassword').val();
+        if ($.trim(loginUsername) == '' || $.trim(loginUsername).length <= 0) {
+            layer.alert("用户名不能为空");
+            return false;
+        }
+        if ($.trim(loginPassword) == '' || $.trim(loginPassword).length <= 0) {
+            layer.alert("密码不能为空");
+            return false;
+        }
+        return true;
+    }
+
+    // 登录流程
+    function login() {
+        if (!validateCode('#loginCode', '#loginCard')) {
+            //阻断提示
+        } else {
+            var loginUsername = $('#loginUsername').val();
+            var loginPassword = $('#loginPassword').val();
+            var params = {};
+            params.loginUsername = loginUsername;
+            params.loginPassword = loginPassword;
+            console.log(JSON.stringify(params))
+            var loginLoadIndex = layer.load(2);
+            $('#loginBtn').val("正在登录...");
+            $.ajax({
+                type: 'post',
+                url: '/logon/',
+                data: params,
+                success: function (data) {
+                    layer.close(loginLoadIndex);
+                    console.log("登录成功")
+                    window.location.href = '/'
+
+                },
+                error: function () {
+                    layer.close(loginLoadIndex);
+                    $('#loginBtn').val("登录");
+                }
+            });
+        }
+
+    }
+
+
+</script>
+
+</body>
+</html>

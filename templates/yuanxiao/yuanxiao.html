@@ -1,0 +1,107 @@
+{% extends 'index.html' %}
+{% block nav %}
+    <form class="layui-form" lay-filter="InsertPurchasingManagement" style="margin-top: 10px" method="post"
+          action="/yuanxiaoD/">
+        {% csrf_token %}
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">选择地区</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="region" class="SelectPaymentMode" id="region"
+                            lay-filter="region">
+                        <option value="">请选择</option>
+                        {% for region in regions %}
+                            <option style="color: #0c0c0c"
+                                    value={{ region.region }}>{{ region.region }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">院校隶属</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="subordinate" class="SelectPaymentMode" lay-filter="subordinate"
+                            id="subordinate">
+                        <option value="" selected>请选择</option>
+                        {% for subordinate in subordinates %}
+                            <option style="color: #0c0c0c"
+                                    value={{ subordinate.subordinate }}>{{ subordinate.subordinate }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">院校特性</label>
+                <input type="checkbox" name="graduate" value="研究生院" title="研究生院">
+                <input type="checkbox" name="zhx" value="自划线" title="自划线">
+            </div>
+            <input type="submit" value="查询" class="layui-btn">
+        </div>
+    </form>
+
+
+
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script>
+        var name = '{{ name |safe }}';
+        layui.use(['layer', 'jquery', 'form'], function () {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                form = layui.form;
+
+            form.on('select(region)', function (data) {
+                {#var options = $("#discipline option:selected");  //获取选中的option#}
+                {##}
+                {#options.val();#}
+                {#//这里做自己想做的事情#}
+                console.log(data.value); //得到被选中的值
+                //最后再渲柒一次
+                $.post(
+                    "/yuanxiao/", {region: data.value, subordinate: ""},
+                    function (data, status) {
+                        console.log(data)
+                        $("#subordinate").empty();
+                        for (const datum of data.subordinates) {
+                            $("#subordinate").append("<option value='" + datum.subordinate + "'>" + datum.subordinate + "</option>");
+                        };
+                        form.render('select');
+                    }
+                );
+                form.render('select');//select是固定写法 不是选择器
+            });
+        });
+
+    </script>
+    <style>
+        .layui-form-select dl dd {
+        {#background-color: #5FB878;#} color: #0c0c0c;
+        }
+
+        .layui-form-select dl dd:hover {
+            background-color: #5FB878;
+            color: #0c0c0c;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="layui-container layui-bg-gray" style="margin-top: 50px">
+        <div class="layui-row layui-col-space10">
+            {% for item in values %}
+                <div class="layui-col-md3">
+                    <div class="layui-panel" style="text-align: center; height: 80px">
+                        <a href="/zhuanyeA?name={{ item.discipline }}"
+                           style="line-height: 40px;color: #5FB878">{{ item.discipline }}</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

@@ -1,0 +1,313 @@
+{% extends 'admin.html' %}
+{% load static %}
+{% block nav %}
+    <a href="/admin/scrapy?name=diqu_student" style="margin-top: 10px" class="layui-btn">数据更新</a>
+    <a style="margin-top: 10px" class="layui-btn" id="create">新增数据</a>
+
+{% endblock %}
+{% block body %}
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="test"></table>
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">修改</a>
+                <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+            </script>
+            <a href="/" class="layui-btn">返回</a>
+        </div>
+        <div id="speedChart" style="display: none;">
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div id="main" style="width: 600px; height: 400px;">
+                <form class="layui-form" action="/admin/create/" method="post">
+                    <div class="layui-form-item" style="display: none">
+                        <label class="layui-form-label">name</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" lay-verify="required" value="student"
+                                   placeholder="请输入name"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">地区</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="region" required lay-verify="required" placeholder="请输入地区"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">年份</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="year" required lay-verify="required" placeholder="请输入年份"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">毕（结）业生数（合计）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="graduates_total" required lay-verify="required"
+                                   placeholder="请输入毕（结）业生数（合计）"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中女生数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="graduates_female" required lay-verify="required"
+                                   placeholder="其中女生数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中博士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="graduates_doctor" required lay-verify="required"
+                                   placeholder="其中博士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中硕士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="graduates_master" required lay-verify="required"
+                                   placeholder="其中硕士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">授予学位数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="degree_awarded" required lay-verify="required"
+                                   placeholder="授予学位数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">招生数（合计）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="entrants_total" required lay-verify="required"
+                                   placeholder="招生数（合计）"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中女生数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="entrants_female" required lay-verify="required"
+                                   placeholder="其中女生数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中博士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="entrants_doctor" required lay-verify="required"
+                                   placeholder="其中博士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中硕士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="entrants_master" required lay-verify="required"
+                                   placeholder="其中硕士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">在校生数（合计）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="enrolment_total" required lay-verify="required"
+                                   placeholder="在校生数（合计）"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中女生数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="enrolment_female" required lay-verify="required"
+                                   placeholder="其中女生数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中博士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="enrolment_doctor" required lay-verify="required"
+                                   placeholder="其中博士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中硕士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="enrolment_master" required lay-verify="required"
+                                   placeholder="其中硕士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">预计毕业生数（合计）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="nextyear_total" required lay-verify="required"
+                                   placeholder="预计毕业生数（合计）"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中女生数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="nextyear_female" required lay-verify="required"
+                                   placeholder="其中女生数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中博士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="nextyear_doctor" required lay-verify="required"
+                                   placeholder="其中博士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">其中硕士数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="nextyear_master" required lay-verify="required"
+                                   placeholder="其中硕士数"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script type="text/javascript">
+        layui.use('table', function () {
+            var table = layui.table;
+            var dropdown = layui.dropdown;
+
+            //第一个实例
+            table.render({
+                elem: '#demo'
+                , height: 600
+                , url: '/admin/student/' //数据接口
+                , method: 'POST'
+                , request: {
+                    pageName: 'page',   // 页码的参数名称，默认：page
+                    limitName: 'size'   // 每页数据量的参数名，默认：limit
+                }
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'id', title: 'ID', width: 100, sort: true, fixed: 'left'}
+                    , {field: 'region', title: '地区', width: 250}
+                    , {field: 'year', title: '年份', width: 300, sort: true}
+                    , {field: 'graduates_total', title: '毕（结）业生数（合计）', width: 200, edit: 'text'}
+                    , {field: 'graduates_female', title: '其中女生数', width: 200, edit: 'text'}
+                    , {field: 'graduates_doctor', title: '博士', width: 200, edit: 'text'}
+                    , {field: 'graduates_master', title: '硕士', width: 200, edit: 'text'}
+                    , {field: 'degree_awarded', title: '授予学位数', width: 200, edit: 'text'}
+                    , {field: 'entrants_total', title: '招生数（合计）', width: 200, edit: 'text'}
+                    , {field: 'entrants_female', title: '其中女生数', width: 200, edit: 'text'}
+                    , {field: 'entrants_doctor', title: '博士', width: 200, edit: 'text'}
+                    , {field: 'entrants_master', title: '硕士', width: 200, edit: 'text'}
+                    , {field: 'enrolment_total', title: '在校生数（合计）', width: 200, edit: 'text'}
+                    , {field: 'enrolment_female', title: '其中女生数', width: 200, edit: 'text'}
+                    , {field: 'enrolment_doctor', title: '博士', width: 200, edit: 'text'}
+                    , {field: 'enrolment_master', title: '硕士', width: 200, edit: 'text'}
+                    , {field: 'nextyear_total', title: '预计毕业生数（合计）', width: 200, edit: 'text'}
+                    , {field: 'nextyear_female', title: '其中女生数', width: 200, edit: 'text'}
+                    , {field: 'nextyear_doctor', title: '博士', width: 200, edit: 'text'}
+                    , {field: 'nextyear_master', title: '硕士', width: 200, edit: 'text'}
+                    , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
+                ]]
+            });
+            table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data //获得当前行数据
+                    , layEvent = obj.event; //获得 lay-event 对应的值
+                if (layEvent === 'detail') {
+                    layer.msg('修改操作');
+                    $.post(
+                        "/admin/update/", {
+                            name: "student"
+                            , id: obj.data.id
+                            , graduates_total: obj.data.graduates_total
+                            , graduates_female: obj.data.graduates_female
+                            , graduates_doctor: obj.data.graduates_doctor
+                            , graduates_master: obj.data.graduates_master
+                            , degree_awarded: obj.data.degree_awarded
+                            , entrants_total: obj.data.entrants_total
+                            , entrants_female: obj.data.entrants_female
+                            , entrants_doctor: obj.data.entrants_doctor
+                            , entrants_master: obj.data.entrants_master
+                            , enrolment_total: obj.data.enrolment_total
+                            , enrolment_female: obj.data.enrolment_female
+                            , enrolment_doctor: obj.data.enrolment_doctor
+                            , enrolment_master: obj.data.enrolment_master
+                            , nextyear_total: obj.data.nextyear_total
+                            , nextyear_female: obj.data.nextyear_female
+                            , nextyear_doctor: obj.data.nextyear_doctor
+                            , nextyear_master: obj.data.nextyear_master
+                        },
+
+                        function (data, status) {
+                            console.log(data)
+                        }
+                    )
+                    ;
+                } else if (layEvent === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构
+                        layer.close(index);
+                        $.post(
+                            "/admin/delete/", {
+                                name: "student",
+                                id: obj.data.id
+                            },
+                            function (data, status) {
+                                console.log(data)
+                            }
+                        );
+                    });
+                }
+            });
+            table.on('edit(test)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+                console.log(obj.value); //得到修改后的值
+                console.log(obj.field); //当前编辑的字段名
+                console.log(obj.data.id); //所在行的所有相关数据
+            });
+
+        });
+        layui.use(['element', 'layer', 'util'], function () {
+            var element = layui.element
+                , layer = layui.layer
+                , util = layui.util
+                , $ = layui.$;
+            $('#create').on('click', function () {
+                layer.open({
+                    title: '添加数据',
+                    type: 1,
+                    shade: false,
+                    area: ['620px', '460px'],
+                    shadeClose: false, //点击遮罩关闭
+                    content: $("#speedChart")
+                });
+            });
+        });
+
+    </script>
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

@@ -1,0 +1,213 @@
+{% extends 'admin.html' %}
+{% load static %}
+{% block nav %}
+    <a href="/admin/scrapy?name=diqu_school" style="margin-top: 10px" class="layui-btn">数据更新</a>
+    <a style="margin-top: 10px" class="layui-btn" id="create">新增数据</a>
+
+{% endblock %}
+{% block body %}
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="test"></table>
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">修改</a>
+                <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+            </script>
+            <a href="/" class="layui-btn">返回</a>
+        </div>
+        <div id="speedChart" style="display: none;">
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div id="main" style="width: 600px; height: 400px;">
+                <form class="layui-form" action="/admin/create/" method="post">
+                    <div class="layui-form-item" style="display: none">
+                        <label class="layui-form-label">name</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" lay-verify="required" value="school"
+                                   placeholder="请输入name"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">地区</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="region" required lay-verify="required" placeholder="请输入地区"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">年份</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="year" required lay-verify="required" placeholder="请输入年份"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">普通高校数（合计）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="regular_total" required lay-verify="required"
+                                   placeholder="普通高校数（合计）"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">中央部门办</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="regular_central" required lay-verify="required"
+                                   placeholder="中央部门办"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">本科院校</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="degree" required lay-verify="required"
+                                   placeholder="本科院校"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">高职院校</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="higher" required lay-verify="required"
+                                   placeholder="高职院校"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">成人高等院校（合计）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="adult_total" required lay-verify="required"
+                                   placeholder="成人高等院校（合计）"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">中央部门办</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="adult_central" required lay-verify="required"
+                                   placeholder="中央部门办"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">民办其他高等院校</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="government" required lay-verify="required"
+                                   placeholder="民办其他高等院校"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script type="text/javascript">
+        layui.use('table', function () {
+            var table = layui.table;
+            var dropdown = layui.dropdown;
+
+            //第一个实例
+            table.render({
+                elem: '#demo'
+                , height: 600
+                , url: '/admin/school/' //数据接口
+                , method: 'POST'
+                , request: {
+                    pageName: 'page',   // 页码的参数名称，默认：page
+                    limitName: 'size'   // 每页数据量的参数名，默认：limit
+                }
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'id', title: 'ID', width: 100, sort: true, fixed: 'left'}
+                    , {field: 'region', title: '地区', width: 250}
+                    , {field: 'year', title: '年份', width: 300, sort: true}
+                    , {field: 'regular_total', title: '普通高校数（合计）', width: 200, edit: 'text'}
+                    , {field: 'regular_central', title: '中央部门办', width: 200, edit: 'text'}
+                    , {field: 'degree', title: '本科院校', width: 200, edit: 'text'}
+                    , {field: 'higher', title: '高职院校', width: 200, edit: 'text'}
+                    , {field: 'adult_total', title: '成人高等院校（合计）', width: 200, edit: 'text'}
+                    , {field: 'adult_central', title: '中央部门办', width: 200, edit: 'text'}
+                    , {field: 'government', title: '民办的其他高等院校', width: 200, edit: 'text'}
+                    , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
+                ]]
+            });
+            table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data //获得当前行数据
+                    , layEvent = obj.event; //获得 lay-event 对应的值
+                if (layEvent === 'detail') {
+                    layer.msg('修改操作');
+                    $.post(
+                        "/admin/update/", {
+                            name: "school"
+                            , id: obj.data.id
+                            , regular_total: obj.data.regular_total
+                            , regular_central: obj.data.regular_central
+                            , degree: obj.data.degree
+                            , higher: obj.data.higher
+                            , adult_total: obj.data.adult_total
+                            , adult_central: obj.data.adult_central
+                            , government: obj.data.government
+                        },
+
+                        function (data, status) {
+                            console.log(data)
+                        }
+                    )
+                    ;
+                } else if (layEvent === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构
+                        layer.close(index);
+                        $.post(
+                            "/admin/delete/", {
+                                name: "school",
+                                id: obj.data.id
+                            },
+                            function (data, status) {
+                                console.log(data)
+                            }
+                        );
+                    });
+                }
+            });
+            table.on('edit(test)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+                console.log(obj.value); //得到修改后的值
+                console.log(obj.field); //当前编辑的字段名
+                console.log(obj.data.id); //所在行的所有相关数据
+            });
+
+        });
+        layui.use(['element', 'layer', 'util'], function () {
+            var element = layui.element
+                , layer = layui.layer
+                , util = layui.util
+                , $ = layui.$;
+            $('#create').on('click', function () {
+                layer.open({
+                    title: '添加数据',
+                    type: 1,
+                    shade: false,
+                    area: ['620px', '460px'],
+                    shadeClose: false, //点击遮罩关闭
+                    content: $("#speedChart")
+                });
+            });
+        });
+
+    </script>
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

@@ -1,0 +1,73 @@
+{% extends 'index.html' %}
+
+{% block nav %}
+
+    {% for item in  year %}
+        <li class="layui-nav-item layui-hide-xs"><a href="/zsrs?year={{ item }}">{{ item }}</a></li>
+    {% endfor %}
+
+{% endblock %}
+
+{% block body %}
+    <div id="main" style="width: 1300px;height:600px;"></div>
+    <script src="/static/echarts/echarts.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var region =
+        {{ region | safe }}
+        var entrants_total =
+        {{entrants_total | safe}}
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '招生人数'
+            },
+
+
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '1%',
+                bottom: '3%',
+                containLabel: true
+            },
+            legend: {
+                data: ['人数']
+            },
+            xAxis: {
+                data: region,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                axisLabel: {
+                    rotate: 40,
+                    interval: 0,
+                },
+            },
+            yAxis: {},
+            series: [
+                {
+                    name: '人数',
+                    type: 'bar',
+                    data: entrants_total,
+                    barWidth: '25%',
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+    </script>
+{% endblock body %}
+
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

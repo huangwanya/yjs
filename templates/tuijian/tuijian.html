@@ -1,0 +1,62 @@
+{% extends 'index.html' %}
+{% block body %}
+    <form class="layui-form" method="post" action="/tuijian/" style="margin-top: 20px">
+        {% csrf_token %}
+        <div class="layui-form-item">
+            <label class="layui-form-label">估计成绩</label>
+            <div class="layui-input-block">
+                <input type="text" name="score" required lay-verify="required" placeholder="请输入成绩" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">专业/自划线</label>
+            <div class="layui-input-block">
+                <select name="zhuanye" lay-verify="required" lay-filter="zhuanye" id="zhuanye">
+                    <option value=""></option>
+                    {% for item in title %}
+                        <option value="{{ item.title }}">{{ item.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script>
+        //Demo
+        layui.use('form', function () {
+            var form = layui.form;
+
+            form.on('radio(type)', function (data) {
+                console.log(data.value); //得到被选中的值
+                console.log('运行到此')
+                //最后再渲柒一次
+                $.post(
+                    "/tuijianZ/", {type: data.value},
+                    function (data, status) {
+                        console.log(data)
+                        $("#zhuanye").empty();
+                        for (const datum of data) {
+                            $("#zhuanye").append("<option value='" + datum.name + "'>" + datum.name + "</option>");
+                        }
+                        ;
+                        form.render('select');
+                    }
+                );
+                form.render('select');//select是固定写法 不是选择器
+            });
+        });
+    </script>
+
+
+{% endblock body %}
+

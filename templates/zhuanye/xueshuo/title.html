@@ -1,0 +1,20 @@
+{% extends 'zhuanye/zhuanyexueshuo.html' %}
+{% load static %}
+{% block body %}
+    <div class="layui-card">
+        <div class="layui-card-body">
+            {% for item in table %}
+                <span style="white-space: pre-line">
+ {{ item }}
+</span>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

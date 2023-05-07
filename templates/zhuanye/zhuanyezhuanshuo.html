@@ -1,0 +1,141 @@
+{% extends 'index.html' %}
+{% block nav %}
+    <form class="layui-form" lay-filter="InsertPurchasingManagement" style="margin-top: 10px" method="post"
+          action="/zhuanyezhuanshuo/">
+        {% csrf_token %}
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">专业</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="discipline" class="SelectPaymentMode" id="discipline"
+                            lay-filter="discipline">
+                        <option value="">请选择</option>
+                        {% for discipline in disciplines %}
+                            <option style="color: #0c0c0c"
+                                    value={{ discipline.discipline }}>{{ discipline.discipline }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">专业类型</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="type" class="SelectPaymentMode" lay-filter="type"
+                            id="type">
+                        <option value="" selected>请选择</option>
+                        {% for type in types %}
+                            <option style="color: #0c0c0c"
+                                    value={{ type.type }}>{{ type.type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">专业名称</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="name" class="SelectPaymentMode" id="name">
+                        <option value="">请选择</option>
+                        {% for name in names %}
+                            <option style="color: #0c0c0c"
+                                    value={{ name.name }}>{{ name.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <input type="submit" value="查询" class="layui-btn">
+        </div>
+    </form>
+
+
+
+    <script src="/static/layui.js"></script>
+    <script src="/static/jquery.js"></script>
+    <script>
+        var name = '{{ name |safe }}';
+        layui.use(['layer', 'jquery', 'form'], function () {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                form = layui.form;
+
+            form.on('select(discipline)', function (data) {
+                {#var options = $("#discipline option:selected");  //获取选中的option#}
+                {##}
+                {#options.val();#}
+                {#//这里做自己想做的事情#}
+                console.log(data.value); //得到被选中的值
+                //最后再渲柒一次
+                $.post(
+                    "/zhuanye/", {name: "zhuanshuo", discipline: data.value, type: ""},
+                    function (data, status) {
+                        console.log(data)
+                        $("#type").empty();
+                        for (const datum of data.types) {
+                            $("#type").append("<option value='" + datum.type + "'>" + datum.type + "</option>");
+                        }
+                        ;
+                        $("#name").empty();
+                        for (const datum of data.names) {
+                            $("#name").append("<option value='" + datum.name + "'>" + datum.name + "</option>");
+                        }
+                        ;
+                        form.render('select');
+                    }
+                );
+                form.render('select');//select是固定写法 不是选择器
+            });
+            form.on('select(type)', function (data) {
+                var options = $("#discipline option:selected");  //获取选中的option
+
+                ;
+                //这里做自己想做的事情
+                console.log(data.value); //得到被选中的值
+                //最后再渲柒一次
+                $.post(
+                    "/zhuanye/", {name: 'zhuanshuo', discipline: options.val(), type: data.value},
+                    function (data, status) {
+                        console.log(data)
+                        $("#name").empty();
+                        for (const datum of data.names) {
+                            $("#name").append("<option value='" + datum.name + "'>" + datum.name + "</option>");
+                        }
+                        ;
+                        form.render('select');
+                    }
+                );
+                form.render('select');//select是固定写法 不是选择器
+            });
+        });
+
+    </script>
+    <style>
+        .layui-form-select dl dd {
+        {#background-color: #5FB878;#} color: #0c0c0c;
+        }
+
+        .layui-form-select dl dd:hover {
+            background-color: #5FB878;
+            color: #0c0c0c;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="layui-container layui-bg-gray" style="margin-top: 50px">
+        <div class="layui-row layui-col-space10">
+            {% for item in values %}
+                <div class="layui-col-md3">
+                    <div class="layui-panel" style="text-align: center; height: 80px">
+                        <a href="/zhuanyeA?name={{ item.discipline }}"
+                           style="line-height: 40px;color: #5FB878">{{ item.discipline }}</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+

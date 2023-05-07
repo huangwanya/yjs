@@ -1,0 +1,114 @@
+{% extends 'index.html' %}
+{% block nav %}
+
+    {% for item in  year %}
+        <li class="layui-nav-item layui-hide-xs"><a href="/xxlx?year={{ item }}">{{ item }}</a></li>
+    {% endfor %}
+
+{% endblock %}
+{% block body %}
+    <div id="main" style="width: 1300px;height:600px;"></div>
+    <script src="/static/echarts/echarts.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var region =
+        {{ region | safe }}
+        var regular_total =
+        {{regular_total | safe}}
+        var adult_total =
+        {{adult_total | safe}}
+        var government =
+        {{government | safe}}
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '学校类型'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data: ['高等院校', '成人院校', '民办院校']
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: region,
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    axisLabel: {
+                        rotate: 40,
+                        interval: 0,
+                    },
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '高等院校',
+                    type: 'line',
+                    stack: 'Total',
+                    areaStyle: {},
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: regular_total
+                },
+                {
+                    name: '成人院校',
+                    type: 'line',
+                    stack: 'Total',
+                    areaStyle: {},
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: adult_total
+                },
+                {
+                    name: '民办院校',
+                    type: 'line',
+                    stack: 'Total',
+                    areaStyle: {},
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: government
+                },
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+    </script>
+{% endblock body %}
+
+
+{% block footer %}
+    底部导航栏
+{% endblock footer %}
+
